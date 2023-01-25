@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -22,16 +21,11 @@ public class SecurityConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfiguration.class);
 
-
-//    @Bean
-//    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-//
-//    }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CorsConfigurationSource corsConfiguration,
                                            Jwt2AuthenticationConverter jwt2AuthenticationConverter) throws Exception {
         http.authorizeHttpRequests()
+                .requestMatchers("/test/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwt2AuthenticationConverter);

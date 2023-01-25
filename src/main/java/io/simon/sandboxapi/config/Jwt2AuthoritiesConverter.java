@@ -20,12 +20,10 @@ public class Jwt2AuthoritiesConverter implements Converter<Jwt, Collection<? ext
     @Override
     public Collection<? extends GrantedAuthority> convert(Jwt jwt) {
         var claims = jwt.getClaims();
-        var resourceAccess = (Map<String, Object>) claims.get("resource_access");
-        var sandboxApi = (Map<String, Object>) resourceAccess.getOrDefault("sandbox-api",
-                Map.of("roles", Collections.emptyList()));
-        var roles = (Collection<String>) sandboxApi.get("roles");
+        var realmAccess = (Map<String, Object>) claims.get("realm_access");
+        var roles = (Collection<String>) realmAccess.get("roles");
 
-        LOGGER.debug("Extraction roles {} from token for user {}", roles, claims.get("sub"));
+        LOGGER.debug("Extracted roles {} from token for user {}", roles, claims.get("sub"));
 
         return roles.stream().map(role -> "ROLE_" + role).map(SimpleGrantedAuthority::new).toList();
     }
